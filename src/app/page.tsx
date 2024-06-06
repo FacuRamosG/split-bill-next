@@ -1,6 +1,9 @@
 
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { createRouteHandlerClient, createServerActionClient } from "@supabase/auth-helpers-nextjs";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { v4 } from "uuid";
+
 
 export default async function Home() {
 
@@ -17,6 +20,29 @@ export default async function Home() {
     const { data } = await supabase.from('Trip').select('*').eq('id', trip.tripId)
     trips.push(data)
   }))
+
+  const addTrip = async (formdata: FormData) => {
+    'use server'
+    const tripName = formdata.get('tripName')
+    if (!tripName) return
+    if (!session) return
+
+    const supainsert = createServerActionClient({ cookies })
+    const id = v4()
+
+
+    const { error } = await supainsert.from('Trip').insert([{ id, name: tripName, created_by: session.user.id }])
+    if (error) {
+      console.log('Error al ingresar un nuevo viaje', error)
+      return
+    }
+    const { error: error2 } = await supainsert.from('UserTrip').insert([{ userId: session.user.id, tripId: id }])
+    if (error2) {
+      console.log('Error al ingresar un nuevo viaje', error2)
+      return
+    }
+    revalidatePath(`/`)
+  }
 
 
 
@@ -39,6 +65,15 @@ export default async function Home() {
                 )
               })
             }
+
+            <h1 className="title mt-6">Agrega un viaje nuevo</h1>
+            <form action={addTrip}>
+              <div>
+                <label htmlFor="trip_name" className="block mb-2 textP font-medium text-gray-900 ">Trip name</label>
+                <input type="text" id="trip_name" name="tripName" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Perú,España,..." required />
+              </div>
+              <button className="bg-blue-600 hover:bg-blue-700 p-2 border text-white rounded-lg px-4 py-2">Agregar viaje</button>
+            </form>
 
           </section>
         )
