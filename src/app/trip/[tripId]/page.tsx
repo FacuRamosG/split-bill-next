@@ -12,7 +12,7 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
     const { data: { session } } = await supabase.auth.getSession()
 
     const { data: isInTheTrip } = await supabase.from('UserTrip').select('*').eq('userId', session?.user.id).eq('tripId', tripId)
-    console.log('isInTheTrip', isInTheTrip)
+
 
     const { data, error } = await supabase.from('UserTrip').select('*,users (*)').eq('tripId', tripId)
 
@@ -184,12 +184,17 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
         revalidatePath(`/trip/${tripId}`)
     }
 
-
+    console.log(isInTheTrip)
     return (
         <>
             {
                 session ? (
-                    isInTheTrip == null ? (
+                    isInTheTrip && isInTheTrip?.length == 0 ? (
+                        <form action={handleAddToTheTrip} className="text-center">
+                            <h1>¿Quieres unirte al viaje de ? </h1>
+                            <button className="border px-3 py-2" >Unirse al viaje</button>
+                        </form>
+                    ) : (
                         <>
                             <Toaster />
                             <section className="p-5 max-w-screen-lg mx-auto">
@@ -262,11 +267,6 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
                                 <SplitBill tripId={tripId} />
                             </section>
                         </>
-                    ) : (
-                        <form action={handleAddToTheTrip} className="text-center">
-                            <h1>¿Quieres unirte al viaje de ? </h1>
-                            <button className="border px-3 py-2" >Unirse al viaje</button>
-                        </form>
 
                     )
                 ) : (
