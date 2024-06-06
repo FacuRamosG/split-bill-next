@@ -1,7 +1,10 @@
+'use server'
 import { createRouteHandlerClient, createServerActionClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { v4 } from "uuid";
 import { revalidatePath } from "next/cache";
+import { Toaster, toast } from "sonner";
+import { SplitBill } from "@/components/common/SplitBill";
 
 export default async function Trip({ params: { tripId } }: { params: { tripId: string } }) {
     const supabase = createRouteHandlerClient({ cookies })
@@ -24,7 +27,10 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
         const billAmount = formData.get('billAmount')
         const paidBy = formData.get('paidBy')
         const participants = formData.getAll('participants')
-
+        if (participants === null || participants.length === 0) {
+            console.log('You must select at least one participant')
+            return
+        }
         const supainsert = createServerActionClient({ cookies })
 
 
@@ -36,7 +42,6 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
 
         revalidatePath(`/trip/${tripId}`)
     }
-
 
     const handleSplitBill = async () => {
         'use server'
@@ -159,14 +164,18 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
             }
         });
 
+
+        return simplifiedTransactions
         // revalidatePath(`/trip/${tripId}`)
     }
 
 
     return (
-        <section className="p-5 max-w-screen-lg mx-auto">
+        <>
+            <Toaster />
+            <section className="p-5 max-w-screen-lg mx-auto">
 
-            {/* {
+                {/* {
                 users.length > 0 && users.map((user: any) => {
                     return (
                         <div key={user[0].id}>
@@ -178,74 +187,74 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
                     )
                 })
             } */}
-            <form action={addBill} className="text-black min-w-full">
-                <h1>Add some Bill</h1>
-                <div className="flex w-full justify-between gap-10">
-                    <div className="w-full">
-                        <div>
-                            <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 ">Bill name</label>
-                            <input type="text" id="first_name" name="billName" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Super.." required />
+                <form action={addBill} className="text-black min-w-full">
+                    <h1>Add some Bill</h1>
+                    <div className="flex w-full justify-between gap-10">
+                        <div className="w-full">
+                            <div>
+                                <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 ">Bill name</label>
+                                <input type="text" id="first_name" name="billName" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Super.." required />
+                            </div>
+                            <div>
+                                <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 ">Amount</label>
+                                <input type="number" id="first_name" name="billAmount" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="$3000" required />
+                            </div>
                         </div>
-                        <div>
-                            <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 ">Amount</label>
-                            <input type="number" id="first_name" name="billAmount" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="$3000" required />
-                        </div>
-                    </div>
-                    <div className="w-full">
-                        <div>
-                            <label htmlFor="first_name" className="block text-sm font-medium text-gray-900 ">Paid by</label>
-                            <select name="paidBy" className="border border-gray-300 rounded-lg p-2" id="" required>
+                        <div className="w-full">
+                            <div>
+                                <label htmlFor="first_name" className="block text-sm font-medium text-gray-900 ">Paid by</label>
+                                <select name="paidBy" className="border border-gray-300 rounded-lg p-2" id="" required>
+                                    {
+                                        users.length > 0 && users.map((user: any) => {
+                                            return (
+                                                <option className="text-black" key={user[0].id} value={user[0].id}>{user[0].name}</option>
+                                            )
+                                        })
+                                    }
+
+                                </select>
+                            </div>
+
+                            <div>
+                                <h1>Participantes</h1>
                                 {
                                     users.length > 0 && users.map((user: any) => {
                                         return (
-                                            <option className="text-black" key={user[0].id} value={user[0].id}>{user[0].name}</option>
+                                            <div key={user[0].id}>
+                                                <input type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 " name="participants" value={user[0].id} />
+                                                <label htmlFor="participants" className="ml-1">{user[0].name}</label>
+                                            </div>
                                         )
                                     })
                                 }
-
-                            </select>
-                        </div>
-
-                        <div>
-                            <h1>Participantes</h1>
-                            {
-                                users.length > 0 && users.map((user: any) => {
-                                    return (
-                                        <div key={user[0].id}>
-                                            <input type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 " name="participants" value={user[0].id} />
-                                            <label htmlFor="participants" className="ml-1">{user[0].name}</label>
-                                        </div>
-                                    )
-                                })
-                            }
+                            </div>
                         </div>
                     </div>
+
+                    <button className="bg-blue-600 hover:bg-blue-700 p-2 border text-white rounded-lg px-4 py-2">Summit</button>
+
+                </form>
+
+                <div>
+                    <h1>Facturas</h1>
+                    {
+                        bills && bills.length > 0 && bills.map((bill: any) => {
+                            return (
+                                <div key={bill.id} className=" shadow-lg rounded-lg p-4 mb-4">
+                                    <h2 className="textP">{bill.name}</h2>
+                                    <p>Amount: {bill.amount}</p>
+                                    <p>Paid by: {bill.users.name}</p>
+                                </div>
+                            )
+                        })
+                    }
                 </div>
 
-                <button className="bg-blue-600 hover:bg-blue-700 p-2 border text-white rounded-lg px-4 py-2">Summit</button>
-
-            </form>
-
-            <div>
-                <h1>Facturas</h1>
-                {
-                    bills && bills.length > 0 && bills.map((bill: any) => {
-                        return (
-                            <div key={bill.id} className=" shadow-lg rounded-lg p-4 mb-4">
-                                <h2 className="textP">{bill.name}</h2>
-                                <p>Amount: {bill.amount}</p>
-                                <p>Paid by: {bill.users.name}</p>
-                            </div>
-                        )
-                    })
-                }
-            </div>
-
-            <form action={handleSplitBill}>
-                <button>Split Bill</button>
-            </form>
-
-
-        </section>
+                {/* <form action={handleSplitBill}>
+                    <button className="border px-2 py-3 rounded-lg bg-blue-400 text-white hover:bg-blue-500">Calcular Rembolsos</button>
+                </form> */}
+                <SplitBill tripId={tripId} />
+            </section>
+        </>
     )
 }
