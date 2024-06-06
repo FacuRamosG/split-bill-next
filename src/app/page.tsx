@@ -31,12 +31,12 @@ export default async function Home() {
     const id = v4()
 
 
-    const { error } = await supainsert.from('Trip').insert([{ id, name: tripName, created_by: session.user.id }])
+    const { error } = await supainsert.from('Trip').insert([{ id, name: tripName, created_by: session?.user.id }])
     if (error) {
       console.log('Error al ingresar un nuevo viaje', error)
       return
     }
-    const { error: error2 } = await supainsert.from('UserTrip').insert([{ userId: session.user.id, tripId: id }])
+    const { error: error2 } = await supainsert.from('UserTrip').insert([{ userId: session?.user.id, tripId: id }])
     if (error2) {
       console.log('Error al ingresar un nuevo viaje', error2)
       return
