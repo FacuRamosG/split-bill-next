@@ -52,10 +52,7 @@ export default async function Home() {
       {/* <Header /> */}
       <div className="text-center mb-10">
         <h1 className="title text-5xl">SplitBill</h1>
-        <p className="textP text-wrap max-w-[700px]">
-          This is a simple app to split bills among friends.
-          You can add bills, add friends, and split the bill among friends.
-        </p>
+
       </div>
       {
         session && (
