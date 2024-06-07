@@ -5,17 +5,21 @@ import { handleSplitBill } from "../utils/handleSplitBill"
 
 export const SplitBill = ({ tripId }: { tripId: string }) => {
     const [rembolsos, setRembolsos] = useState<{ from: string; to: string; amount: number; }[]>([])
+    const [loading, setLoading] = useState(false)
 
     const handleClick = useCallback(async () => {
+        setLoading(true)
         const response = await handleSplitBill({ tripId })
         setRembolsos(response)
+        setLoading(false)
     }, [tripId])
 
-    console.log(rembolsos)
 
     return (
         <>
-            <button onClick={handleClick} className="border text-white px-3 py-2 bg-blue-500 hover:bg-blue-600">Calcular rembolsos</button>
+            <button onClick={handleClick} disabled={loading} style={{ backgroundColor: loading ? 'rgb(37 99 235)' : '' }} className="border text-white px-3 py-2 bg-blue-500 hover:bg-blue-600">
+                {loading ? 'Calculando...' : 'Calcular rembolsos'}
+            </button>
             {
                 rembolsos && rembolsos.length > 0 && rembolsos.map((rembolso, index) => {
                     return (
