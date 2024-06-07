@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { handleSplitBill } from "../utils/handleSplitBill"
+import { toast } from "sonner"
 
 export const SplitBill = ({ tripId }: { tripId: string }) => {
     const [rembolsos, setRembolsos] = useState<{ from: string; to: string; amount: number; }[]>([])

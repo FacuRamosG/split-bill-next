@@ -3,10 +3,10 @@ import { createRouteHandlerClient, createServerActionClient } from "@supabase/au
 import { cookies } from "next/headers"
 import { v4 } from "uuid";
 import { revalidatePath } from "next/cache";
-import { Toaster, toast } from "sonner";
+import { Toaster } from "sonner";
 import { SplitBill } from "@/components/common/SplitBill";
 import { ComposeAddBillButton } from "@/components/common/ComposeAddBillButton";
-import { ComposeDeleteBill } from "@/components/common/ComposeDeleteBill";
+import { Bills } from "@/components/common/Bills";
 
 export default async function Trip({ params: { tripId } }: { params: { tripId: string } }) {
 
@@ -60,6 +60,17 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
         revalidatePath(`/trip/${tripId}`)
     }
 
+    const deleteBill = async (formData: FormData) => {
+        'use server'
+        const id = formData.get('idBill')
+        const supadelete = createServerActionClient({ cookies })
+        const { error } = await supadelete.from('Bill').delete().eq('id', id)
+        if (error) {
+            console.log(error)
+        }
+        revalidatePath(`/trip/${tripId}`)
+    }
+
 
     return (
         <>
@@ -95,7 +106,7 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
                                                         {
                                                             users.length > 0 && users.map((user: any) => {
                                                                 return (
-                                                                    <option className="text-black" key={user[0].id} value={user[0].id}>{user[0].name}</option>
+                                                                    <option className="text-black p-2" key={user[0].id} value={user[0].id}>{user[0].name}</option>
                                                                 )
                                                             })
                                                         }
@@ -127,22 +138,10 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
                                 <div>
                                     <h1 className="title text-3xl">Gastos</h1>
                                     {
-                                        bills && bills.length > 0 && bills.map((bill: any) => {
-                                            return (
-                                                <div key={bill.id} className=" shadow-lg rounded-lg p-4 mb-4">
-                                                    <h2 className="textP">{bill.name}</h2>
-                                                    <p>Total: <strong>${bill.amount}</strong></p>
-                                                    <p>Pagado por: <strong>{bill.users.name}</strong></p>
-                                                    {/* <ComposeDeleteBill billId={bill.id} tripId={tripId} /> */}
-                                                </div>
-                                            )
-                                        })
+                                        bills && bills.length > 0 && <Bills bills={bills} />
                                     }
                                 </div>
 
-                                {/* <form action={handleSplitBill}>
-                    <button className="border px-2 py-3 rounded-lg bg-blue-400 text-white hover:bg-blue-500">Calcular Rembolsos</button>
-                </form> */}
                                 <SplitBill tripId={tripId} />
                             </section>
                         </>
