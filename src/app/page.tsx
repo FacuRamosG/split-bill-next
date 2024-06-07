@@ -51,7 +51,7 @@ export default async function Home() {
 
       {/* <Header /> */}
       <div className="text-center mb-10">
-        <h1 className="title">Welcome to SplitBill</h1>
+        <h1 className="title text-5xl">SplitBill</h1>
         <p className="textP text-wrap max-w-[700px]">
           This is a simple app to split bills among friends.
           You can add bills, add friends, and split the bill among friends.
@@ -76,10 +76,9 @@ export default async function Home() {
             </div>
 
             <div className="w-full flex flex-col gap-6">
-              <h1 className="title">Agrega un viaje nuevo</h1>
               <form action={addTrip} className="flex flex-col gap-4">
                 <div>
-                  <label htmlFor="trip_name" className="block mb-2 textP font-medium text-gray-900 ">Trip name</label>
+                  <label htmlFor="trip_name" className="block mb-2 textP font-medium text-gray-900 ">Nombre del nuevo viaje</label>
                   <input type="text" id="trip_name" name="tripName" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Perú,España,..." required />
                 </div>
                 <button className="bg-blue-600 hover:bg-blue-700 p-2 border text-white rounded-lg px-4 py-2">Agregar viaje</button>

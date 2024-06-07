@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { Toaster, toast } from "sonner";
 import { SplitBill } from "@/components/common/SplitBill";
 import { ComposeAddBillButton } from "@/components/common/ComposeAddBillButton";
+import { ComposeDeleteBill } from "@/components/common/ComposeDeleteBill";
 
 export default async function Trip({ params: { tripId } }: { params: { tripId: string } }) {
 
@@ -59,17 +60,6 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
         revalidatePath(`/trip/${tripId}`)
     }
 
-    const deleteBill = async (e: any) => {
-        'use server'
-        console.log(e.target.parentElement.id)
-        const supadelete = createServerActionClient({ cookies })
-        const { error } = await supadelete.from('Bill').delete().eq('id', e.target.parentElement.id)
-        if (error) {
-            console.log('Error al eliminar la factura', error)
-            return
-        }
-        revalidatePath(`/trip/${tripId}`)
-    }
 
     return (
         <>
@@ -86,21 +76,21 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
                             <section className="p-5 max-w-screen-lg mx-auto">
                                 <form action={addBill} className="text-black min-w-full flex flex-col ">
                                     <div>
-                                        <h1 className="title text-3xl">Add some Bill</h1>
-                                        <div className="flex w-full justify-between gap-10">
-                                            <div className="w-full">
+                                        <h1 className="title text-3xl">Agrega un gasto</h1>
+                                        <div className="flex w-full mt-7 justify-between gap-10">
+                                            <div className="w-full flex flex-col gap-4">
                                                 <div>
-                                                    <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 ">Bill name</label>
+                                                    <label htmlFor="first_name" className="block mb-2 text-lg font-medium text-gray-900 ">Nombre del gasto</label>
                                                     <input type="text" id="first_name" name="billName" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Super.." required />
                                                 </div>
                                                 <div>
-                                                    <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 ">Amount</label>
+                                                    <label htmlFor="first_name" className="block mb-2 text-lg font-medium text-gray-900 ">Total</label>
                                                     <input type="number" id="first_name" name="billAmount" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="$3000" required />
                                                 </div>
                                             </div>
-                                            <div className="w-full">
+                                            <div className="w-full flex flex-col gap-4">
                                                 <div>
-                                                    <label htmlFor="first_name" className="block text-sm font-medium text-gray-900 ">Paid by</label>
+                                                    <label htmlFor="first_name" className="block text-lg font-medium text-gray-900 ">Pagado por</label>
                                                     <select name="paidBy" className="border border-gray-300 rounded-lg p-2" id="" required>
                                                         {
                                                             users.length > 0 && users.map((user: any) => {
@@ -114,11 +104,11 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
                                                 </div>
 
                                                 <div>
-                                                    <h1>Participantes</h1>
+                                                    <h1 className="text-lg font-medium text-gray-900" >Participantes</h1>
                                                     {
                                                         users.length > 0 && users.map((user: any) => {
                                                             return (
-                                                                <div key={user[0].id}>
+                                                                <div key={user[0].id} className="flex justify-start items-center">
                                                                     <input type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 " name="participants" value={user[0].id} />
                                                                     <label htmlFor="participants" className="ml-1">{user[0].name}</label>
                                                                 </div>
@@ -135,15 +125,15 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
                                 </form>
 
                                 <div>
-                                    <h1>Facturas</h1>
+                                    <h1 className="title text-3xl">Gastos</h1>
                                     {
                                         bills && bills.length > 0 && bills.map((bill: any) => {
                                             return (
                                                 <div key={bill.id} className=" shadow-lg rounded-lg p-4 mb-4">
                                                     <h2 className="textP">{bill.name}</h2>
-                                                    <p>Amount: {bill.amount}</p>
-                                                    <p>Paid by: {bill.users.name}</p>
-                                                    <button className="text-red-700" onClick={deleteBill}>X</button>
+                                                    <p>Total: <strong>${bill.amount}</strong></p>
+                                                    <p>Pagado por: <strong>{bill.users.name}</strong></p>
+                                                    {/* <ComposeDeleteBill billId={bill.id} tripId={tripId} /> */}
                                                 </div>
                                             )
                                         })
