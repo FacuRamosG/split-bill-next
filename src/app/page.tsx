@@ -17,7 +17,7 @@ export default async function Home() {
   //arreglar esto
   let trips: ({} | null)[] = []
   data && data.length > 0 && await Promise.all(data.map(async (trip: any) => {
-    const { data } = await supabase.from('Trip').select('*').eq('id', trip.tripId)
+    const { data } = await supabase.from('Trip').select('*').eq('id', trip.tripId).order('created_at', { ascending: false })
     trips.push(data)
   }))
 
@@ -52,7 +52,7 @@ export default async function Home() {
       {/* <Header /> */}
       <div className="text-center mb-10">
         <h1 className="title">Welcome to SplitBill</h1>
-        <p className="textP">
+        <p className="textP text-wrap max-w-[700px]">
           This is a simple app to split bills among friends.
           You can add bills, add friends, and split the bill among friends.
         </p>

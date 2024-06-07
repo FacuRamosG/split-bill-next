@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
             data: { user },
         } = await supabase.auth.getUser()
         let metadata = user?.user_metadata
+        console.log('metadata', metadata)
     }
 
     return NextResponse.redirect(requestUrl.origin, { status: 302 });
