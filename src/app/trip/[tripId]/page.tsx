@@ -59,7 +59,7 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
                 session ? (
                     isInTheTrip && isInTheTrip?.length == 0 ? (
                         <form action={handleAddToTheTrip} className="text-center">
-                            <h1>¿Quieres unirte al viaje llamado {trip[0].name}? </h1>
+                            <h1>¿Quieres unirte al viaje llamado  </h1>
                             <button className="border px-3 py-2" >Unirse al viaje</button>
                         </form>
                     ) : (
