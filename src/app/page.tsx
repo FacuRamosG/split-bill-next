@@ -1,4 +1,3 @@
-
 import { createRouteHandlerClient, createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
@@ -8,6 +7,7 @@ import { v4 } from "uuid";
 export default async function Home() {
 
   const supabase = createRouteHandlerClient({ cookies })
+
 
   const { data: { session } } = await supabase.auth.getSession()
 
