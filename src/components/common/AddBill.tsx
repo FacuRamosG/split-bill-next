@@ -16,6 +16,10 @@ export const AddBill = ({ users, tripId }: { users: any, tripId: string }) => {
         }
 
         const response = await handleAddBill({ tripId, formData })
+        if (response) {
+            toast.error('Error al agregar el gasto')
+            return
+        }
 
         toast.success('Gasto agregado')
 

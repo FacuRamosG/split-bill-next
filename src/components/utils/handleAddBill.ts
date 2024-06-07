@@ -13,10 +13,17 @@ export const handleAddBill = async ({ tripId, formData }: { tripId: string, form
     const paidBy = formData.get('paidBy')
     const participants = formData.getAll('participants')
 
-    await supainsert.from('Bill').insert({ id, name: billName, amount: billAmount, paidBy: paidBy, tripId })
+    const { error } = await supainsert.from('Bill').insert({ id, name: billName, amount: billAmount, paidBy: paidBy, tripId })
+    if (error) {
+        console.log('Error al ingresar un nuevo gasto', error)
+        return (error)
+    }
     participants && participants.length > 0 && await Promise.all(participants.map(async (participant: any) => {
         const { error } = await supainsert.from('UserBill').insert({ billId: id, userId: participant, tripId })
-        if (error) console.log(error)
+        if (error) {
+            console.log('Error al ingresar un nuevo gasto', error)
+            return (error)
+        }
     }))
     revalidatePath(`/`);
 }
