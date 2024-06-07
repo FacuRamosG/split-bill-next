@@ -1,9 +1,7 @@
 import { AddNewTrip } from "@/components/common/AddNewTrip";
-import { createRouteHandlerClient, createServerActionClient } from "@supabase/auth-helpers-nextjs";
-import { revalidatePath } from "next/cache";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { Toaster } from "sonner";
-import { v4 } from "uuid";
 
 
 export default async function Home() {
