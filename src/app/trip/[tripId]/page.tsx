@@ -80,9 +80,9 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
 
                     )
                 ) : (
-                    <div className="text-center flex flex-col justify-center">
-                        <img src="https://www.shutterstock.com/image-photo/cat-holding-stop-sign-isolated-600nw-567313750.jpg" alt="" />
-                        <h1>Debe iniciar sesion para poder ver esta pagina</h1>
+                    <div className="text-center flex flex-col justify-center items-center mt-10">
+                        <h1 className="title text-3xl">Debes iniciar sesion para poder ver esta pagina</h1>
+                        <img src="https://www.shutterstock.com/image-photo/cat-holding-stop-sign-isolated-600nw-567313750.jpg" alt="" width={500} />
                     </div>
                 )
             }
