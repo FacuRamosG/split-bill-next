@@ -3,12 +3,14 @@
 import { useCallback, useEffect, useState } from "react"
 import { handleSplitBill } from "../utils/handleSplitBill"
 import { toast } from "sonner"
+import { useRouter } from "next/router"
 
 export const SplitBill = ({ tripId }: { tripId: string }) => {
     const [rembolsos, setRembolsos] = useState<{ from: string; to: string; amount: number; }[]>([])
     const [loading, setLoading] = useState(false)
     const [copied, setCopied] = useState(false)
-    const url = window.location.href
+
+    const url = `https://split-bill-next.vercel.app/trip/${tripId}`
 
     const handleClick = useCallback(async () => {
         setLoading(true)
@@ -61,7 +63,7 @@ export const SplitBill = ({ tripId }: { tripId: string }) => {
                         </span>
                             : <span id="success-icon" className=" inline-flex items-center">
                                 <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5" />
+                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5.917 5.724 10.5 15 1.5" />
                                 </svg>
                             </span>}
                     </button>
