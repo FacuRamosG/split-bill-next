@@ -58,7 +58,7 @@ export default async function Home() {
         session && (
           <section className="max-w-screen-lg m-auto flex sm:flex-row flex-col gap-28 w-full justify-between items-start">
             <div className="w-full">
-              {trips.length > 0 ? <h1 className="title">Tus viajes</h1> : <h1 className="title">Inicia un nuevo viaje o súmate a un viaje</h1>}
+              {trips.length > 0 ? <h1 className="title">Tus viajes</h1> : <h1 className="title text-xl text-wrap max-w-[400px]">No tienes ningun viaje, inicia uno nuevo o súmate al de tus amigos</h1>}
               {
                 trips.length > 0 && trips.map((trip: any) => {
                   return (
