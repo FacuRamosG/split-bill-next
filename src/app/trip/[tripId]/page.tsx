@@ -16,6 +16,9 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
 
     const { data: isInTheTrip } = await supabase.from('UserTrip').select('*').eq('userId', session?.user.id).eq('tripId', tripId)
 
+    const { data: trip } = await supabase.from('Trip').select('*,users (*)').eq('id', tripId)
+    // console.log('trip', trip)
+
 
     const { data, error } = await supabase.from('UserTrip').select('*,users (*)').eq('tripId', tripId)
 
@@ -56,7 +59,7 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
                 session ? (
                     isInTheTrip && isInTheTrip?.length == 0 ? (
                         <form action={handleAddToTheTrip} className="text-center">
-                            <h1>¿Quieres unirte al viaje de ? </h1>
+                            <h1>¿Quieres unirte al viaje llamado {trip[0].name}? </h1>
                             <button className="border px-3 py-2" >Unirse al viaje</button>
                         </form>
                     ) : (
@@ -77,7 +80,8 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
 
                     )
                 ) : (
-                    <div className="text-center">
+                    <div className="text-center flex flex-col justify-center">
+                        <img src="https://www.shutterstock.com/image-photo/cat-holding-stop-sign-isolated-600nw-567313750.jpg" alt="" />
                         <h1>Debe iniciar sesion para poder ver esta pagina</h1>
                     </div>
                 )

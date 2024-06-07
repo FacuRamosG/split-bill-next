@@ -122,6 +122,7 @@ export const handleSplitBill = async ({ tripId }: { tripId: string }) => {
         if (from && to) {
             transaction.from = from[0].name
             transaction.to = to[0].name
+            transaction.amount = Math.round(transaction.amount)
             rembolsos.push(transaction)
         }
     }));

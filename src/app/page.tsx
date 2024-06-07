@@ -47,7 +47,7 @@ export default async function Home() {
 
 
   return (
-    <main className="flex  flex-col items-center justify-between mt-16">
+    <main className="flex  flex-col items-center justify-between mt-16 px-5 sm:px-0">
 
       {/* <Header /> */}
       <div className="text-center mb-10">
