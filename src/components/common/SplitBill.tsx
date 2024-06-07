@@ -22,7 +22,7 @@ export const SplitBill = ({ tripId }: { tripId: string }) => {
 
     return (
         <>
-            <button onClick={copyURL} className="text-blue-600">Invita a tus amigos</button>
+            <button onClick={copyURL} className="text-blue-600 mt-8 mr-3">Invita a tus amigos</button>
             <button onClick={handleClick} disabled={loading} style={{ backgroundColor: loading ? 'rgb(37 99 235)' : '' }} className="border text-white px-3 py-2 bg-blue-500 hover:bg-blue-600">
                 {loading ? 'Calculando...' : 'Calcular rembolsos'}
             </button>
