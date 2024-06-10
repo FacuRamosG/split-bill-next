@@ -22,18 +22,24 @@ export default async function Home() {
   }))
 
   return (
-    <main className="flex  flex-col items-center justify-between mt-16 px-5 sm:px-0">
+    <main className="flex max-w-screen-lg mx-auto  flex-col items-center justify-between mt-10 px-5 sm:px-0">
 
       <Toaster />
-      <div className="text-center mb-10">
-        <h1 className="title text-5xl">SplitBill</h1>
+      <div className="flex gap-10 mb-10">
+        <div className="flex flex-col justify-center items-center">
+          <h2 className="title text-5xl text-balance ">Organiza y divide de manera sencilla</h2>
+          <p className="textP ">La forma mas simple de organizar tus gastos compartidos</p>
 
+        </div>
+        <div className="">
+          <img src="/peopleSplit.jpeg" className="hidden lg:block" alt="people" height={500} width={600} />
+        </div>
       </div>
       {
-        session && (
-          <section className="max-w-screen-lg m-auto flex sm:flex-row flex-col gap-28 w-full justify-between items-start">
+        session ? (
+          <section className="max-w-screen-lg mx-auto flex sm:flex-row flex-col gap-28 w-full justify-between items-start m-24">
             <div className="w-full">
-              {trips.length > 0 ? <h1 className="title">Tus viajes</h1> : <h1 className="title text-xl text-wrap max-w-[400px]">No tienes ningun viaje, inicia uno nuevo o súmate al de tus amigos</h1>}
+              {trips.length > 0 ? <h1 className="title text-xl">Tus viajes</h1> : <h1 className="title text-xl text-wrap max-w-[400px]">No tienes ningun viaje, inicia uno nuevo o súmate al de tus amigos</h1>}
               {
                 trips.length > 0 && trips.map((trip: any) => {
                   return (
@@ -50,9 +56,15 @@ export default async function Home() {
             <AddNewTrip created_by={session.user.id} />
           </section>
         )
+          : (
+            <section>
+              <h1 className="title text-2xl">Inicia sesión para ver tus viajes, crear nuevos o unirte al de tus amigos</h1>
+            </section>
+          )
       }
 
 
     </main>
   );
 }
+

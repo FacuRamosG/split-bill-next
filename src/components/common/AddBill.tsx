@@ -10,10 +10,24 @@ export const AddBill = ({ users, tripId }: { users: any, tripId: string }) => {
 
     const handingSumit = useCallback(async (formData: FormData) => {
         const participants = formData.getAll('participants')
+        const billAmount = formData.get('billAmount')
+
         if (participants === null || participants.length === 0) {
-            alert('Elige al menos un participante')
+            toast.error('Elige al menos un participante')
             return
         }
+        if (billAmount === null) {
+            toast.error('Agrega un monto')
+            return
+        }
+
+        const amount = Number(billAmount)
+
+        if (amount <= 0) {
+            toast.error('El monto debe ser mayor a 0')
+            return
+        }
+
 
         const response = await handleAddBill({ tripId, formData })
         if (response) {
@@ -33,17 +47,17 @@ export const AddBill = ({ users, tripId }: { users: any, tripId: string }) => {
                 <div className="flex w-full mt-7 justify-between gap-10">
                     <div className="w-full flex flex-col gap-4">
                         <div>
-                            <label htmlFor="first_name" className="block mb-2 text-lg font-medium text-gray-900 ">Nombre del gasto</label>
+                            <label htmlFor="first_name" className="block mb-2 text-lg font-medium text-gray-900 ">Nombre del gasto:</label>
                             <input type="text" id="first_name" name="billName" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Super.." required />
                         </div>
                         <div>
-                            <label htmlFor="first_name" className="block mb-2 text-lg font-medium text-gray-900 ">Total</label>
+                            <label htmlFor="first_name" className="block mb-2 text-lg font-medium text-gray-900 ">Total:</label>
                             <input type="number" id="first_name" name="billAmount" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="$3000" required />
                         </div>
                     </div>
                     <div className="w-full flex flex-col gap-4">
                         <div>
-                            <label htmlFor="first_name" className="block text-lg font-medium text-gray-900 ">Pagado por</label>
+                            <label htmlFor="first_name" className="block text-lg font-medium text-gray-900 ">Pagado por:</label>
                             <select name="paidBy" className="border border-gray-300 rounded-lg p-2" id="" required>
                                 {
                                     users.length > 0 && users.map((user: any) => {
@@ -57,7 +71,7 @@ export const AddBill = ({ users, tripId }: { users: any, tripId: string }) => {
                         </div>
 
                         <div>
-                            <h1 className="text-lg font-medium text-gray-900" >Participantes</h1>
+                            <h1 className="text-lg font-medium text-gray-900" >Participantes:</h1>
                             {
                                 users.length > 0 && users.map((user: any) => {
                                     return (

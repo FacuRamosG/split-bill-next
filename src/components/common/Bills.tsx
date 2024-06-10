@@ -13,7 +13,7 @@ export const Bills = ({ bills }: { bills: any }) => {
         const ask = confirm('¿Estás seguro de que quieres eliminar este gasto?')
         if (!ask) return
         const response = await handleDeleteBill({ billId: id })
-        toast.success('Bill eliminado')
+        toast.success('Gasto eliminado')
         return response
     }, [])
     return (

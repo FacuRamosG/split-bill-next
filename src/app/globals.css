@@ -44,3 +44,12 @@ body {
   font-weight: 400;
   font-size: 1.5rem;
 }
+
+
+.bgPeople {
+  background-image: url('/peopleSplit.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 300px;
+}

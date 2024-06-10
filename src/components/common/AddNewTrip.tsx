@@ -27,7 +27,7 @@ export const AddNewTrip = ({ created_by }: { created_by: string }) => {
         <div className="w-full flex flex-col gap-6">
             <form action={addTrip} className="flex flex-col gap-4">
                 <div>
-                    <label htmlFor="trip_name" className="block mb-2 textP font-medium text-gray-900 ">Nombre del nuevo viaje</label>
+                    <label htmlFor="trip_name" className="block mb-2 title text-xl font-medium text-gray-900 ">Nombre del nuevo viaje</label>
                     <input type="text" id="trip_name" name="tripName" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Perú,España,..." required />
                 </div>
                 <ComposeAddTripButton />
