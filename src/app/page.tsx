@@ -2,24 +2,34 @@ import { AddNewTrip } from "@/components/common/AddNewTrip";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { Toaster } from "sonner";
+import { Database } from "./types/database";
 
 
 export default async function Home() {
 
-  const supabase = createRouteHandlerClient({ cookies })
+  const supabase = createRouteHandlerClient<Database>({ cookies })
 
 
   const { data: { session } } = await supabase.auth.getSession()
 
 
-  const { data, error } = await supabase.from('UserTrip').select('*,Trip (*)').eq('userId', session?.user.id)
+  const { data, error } = await supabase.from('UserTrip').select('*,Trip (*)').eq('userId', session?.user.id || '')
 
   //arreglar esto
-  let trips: ({} | null)[] = []
-  data && data.length > 0 && await Promise.all(data.map(async (trip: any) => {
-    const { data } = await supabase.from('Trip').select('*').eq('id', trip.tripId).order('created_at', { ascending: false })
-    trips.push(data)
-  }))
+  let trips: {
+    created_at: string;
+    created_by: string;
+    id: string;
+    name: string;
+  }[] | null = [];
+  if (data && data.length > 0) {
+    await Promise.all(data.map(async (trip) => {
+      const { data: tripData } = await supabase.from('Trip').select('*').eq('id', trip.tripId).order('created_at', { ascending: false });
+      if (tripData) {
+        trips.push(tripData[0]);
+      }
+    }));
+  }
 
   return (
     <main className="flex max-w-screen-lg mx-auto  flex-col items-center justify-between mt-10 px-5 sm:px-0">
@@ -41,11 +51,11 @@ export default async function Home() {
             <div className="w-full">
               {trips.length > 0 ? <h1 className="title text-xl">Tus viajes</h1> : <h1 className="title text-xl text-wrap max-w-[400px]">No tienes ningun viaje, inicia uno nuevo o súmate al de tus amigos</h1>}
               {
-                trips.length > 0 && trips.map((trip: any) => {
+                trips.length > 0 && trips.map((trip) => {
                   return (
-                    <a href={`/trip/${trip[0].id}`} key={trip[0].id}>
+                    <a href={`/trip/${trip.id}`} key={trip.id}>
                       <div className=" shadow-lg rounded-lg p-4 mb-4 hover:scale-105">
-                        <h2 className="text-xl font-bold">{trip[0].name}</h2>
+                        <h2 className="text-xl font-bold">{trip.name}</h2>
                       </div>
                     </a>
                   )

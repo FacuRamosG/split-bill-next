@@ -18,7 +18,7 @@ export const handleAddBill = async ({ tripId, formData }: { tripId: string, form
         console.log('Error al ingresar un nuevo gasto', error)
         return (error)
     }
-    participants && participants.length > 0 && await Promise.all(participants.map(async (participant: any) => {
+    participants && participants.length > 0 && await Promise.all(participants.map(async (participant) => {
         const { error } = await supainsert.from('UserBill').insert({ billId: id, userId: participant, tripId })
         if (error) {
             console.log('Error al ingresar un nuevo gasto', error)

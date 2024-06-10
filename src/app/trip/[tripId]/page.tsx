@@ -8,13 +8,14 @@ import { SplitBill } from "@/components/common/SplitBill";
 import { ComposeAddBillButton } from "@/components/common/ComposeAddBillButton";
 import { Bills } from "@/components/common/Bills";
 import { AddBill } from "@/components/common/AddBill";
+import { Database } from "@/app/types/database";
 
 export default async function Trip({ params: { tripId } }: { params: { tripId: string } }) {
 
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createRouteHandlerClient<Database>({ cookies })
     const { data: { session } } = await supabase.auth.getSession()
 
-    const { data: isInTheTrip } = await supabase.from('UserTrip').select('*').eq('userId', session?.user.id).eq('tripId', tripId)
+    const { data: isInTheTrip } = await supabase.from('UserTrip').select('*').eq('userId', session?.user.id ?? '').eq('tripId', tripId)
 
     const { data: trip } = await supabase.from('Trip').select('*,users (*)').eq('id', tripId)
     // console.log('trip', trip)
@@ -26,10 +27,17 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
 
 
     //fix this shit, get users from data
-    let users: ({} | null)[] = []
-    data && data.length > 0 && await Promise.all(data.map(async (user: any) => {
+    let users: {
+        avatar_url: string | null;
+        id: string;
+        name: string | null;
+    }[] = [];
+    data && data.length > 0 && await Promise.all(data.map(async (user) => {
         const { data } = await supabase.from('users').select('*').eq('id', user.userId)
-        users.push(data)
+        if (data) {
+            users.push(data[0])
+        }
+
     }))
 
 

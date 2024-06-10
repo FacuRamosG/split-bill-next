@@ -3,8 +3,21 @@
 import { useCallback } from "react"
 import { handleDeleteBill } from "../utils/handleDeleteBill"
 import { toast } from "sonner"
+import { type Database } from "@/app/types/database";
 
-export const Bills = ({ bills }: { bills: any }) => {
+type Bill = {
+    amount: number;
+    created_at: string;
+    id: string;
+    name: string;
+    paidBy: string;
+    tripId: string;
+    users: {
+        name: string | null;
+    };
+}
+
+export const Bills = ({ bills }: { bills: Bill[] }) => {
 
     const deleteBill = useCallback(async (formData: FormData) => {
         let id = formData.get('idBill')
@@ -19,7 +32,7 @@ export const Bills = ({ bills }: { bills: any }) => {
     return (
         <>
             {
-                bills.map((bill: any, index: number) => {
+                bills.map((bill, index: number) => {
                     return (
                         <form key={index} action={deleteBill} className="border p-2">
                             <h2 className="textP">{bill.name}</h2>
