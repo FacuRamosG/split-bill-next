@@ -14,7 +14,7 @@ type Bill = {
     tripId: string;
     users: {
         name: string | null;
-    };
+    } | null;
 }
 
 export const Bills = ({ bills }: { bills: Bill[] }) => {
@@ -37,7 +37,7 @@ export const Bills = ({ bills }: { bills: Bill[] }) => {
                         <form key={index} action={deleteBill} className="border p-2">
                             <h2 className="textP">{bill.name}</h2>
                             <p>Total: <strong>${bill.amount}</strong></p>
-                            <p>Pagado por: <strong>{bill.users.name}</strong></p>
+                            <p>Pagado por: <strong>{bill.users?.name}</strong></p>
                             <button name="idBill" value={bill.id} className="text-red-500 font-semibold hover:text-red-900" >Eliminar</button>
                         </form>
                     )
