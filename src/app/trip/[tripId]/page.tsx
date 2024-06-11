@@ -9,31 +9,29 @@ import { ComposeAddBillButton } from "@/components/common/ComposeAddBillButton";
 import { Bills } from "@/components/common/Bills";
 import { AddBill } from "@/components/common/AddBill";
 import { Database } from "@/app/types/database";
+import { AddToTheTrip } from "@/components/common/AddToTheTrip";
 
 export default async function Trip({ params: { tripId } }: { params: { tripId: string } }) {
 
     const supabase = createRouteHandlerClient<Database>({ cookies })
+
     const { data: { session } } = await supabase.auth.getSession()
 
     const { data: isInTheTrip } = await supabase.from('UserTrip').select('*').eq('userId', session?.user.id ?? '').eq('tripId', tripId)
-
-    const { data: trip } = await supabase.from('Trip').select('*,users (*)').eq('id', tripId)
-    // console.log('trip', trip)
-
 
     const { data, error } = await supabase.from('UserTrip').select('*,users (*)').eq('tripId', tripId)
 
     const { data: bills } = await supabase.from('Bill').select('*, users (name)').eq('tripId', tripId)
 
 
-    //fix this shit, get users from data
     let users: {
         avatar_url: string | null;
         id: string;
         name: string | null;
     }[] = [];
+
     data && data.length > 0 && await Promise.all(data.map(async (user) => {
-        const { data } = await supabase.from('users').select('*').eq('id', user.userId)
+        const { data } = await supabase.from('users').select('*').eq('id', user.userId).order('name')
         if (data) {
             users.push(data[0])
         }
@@ -41,35 +39,12 @@ export default async function Trip({ params: { tripId } }: { params: { tripId: s
     }))
 
 
-    const handleAddToTheTrip = async () => {
-        'use server'
-        const supainsert = createServerActionClient({ cookies })
-        const { error } = await supainsert.from('UserTrip').insert({ userId: session?.user.id, tripId })
-        console.log('error', error)
-        revalidatePath(`/trip/${tripId}`)
-    }
-
-    const deleteBill = async (formData: FormData) => {
-        'use server'
-        const id = formData.get('idBill')
-        const supadelete = createServerActionClient({ cookies })
-        const { error } = await supadelete.from('Bill').delete().eq('id', id)
-        if (error) {
-            console.log(error)
-        }
-        revalidatePath(`/trip/${tripId}`)
-    }
-
-
     return (
         <>
             {
                 session ? (
                     isInTheTrip && isInTheTrip?.length == 0 ? (
-                        <form action={handleAddToTheTrip} className="text-center">
-                            <h1>¿Quieres unirte al viaje llamado  </h1>
-                            <button className="border px-3 py-2" >Unirse al viaje</button>
-                        </form>
+                        <AddToTheTrip tripId={tripId} userId={session.user.id} />
                     ) : (
                         <>
                             <Toaster />
